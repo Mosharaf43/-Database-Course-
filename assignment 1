@@ -1,0 +1,68 @@
+-- Create Author table
+CREATE TABLE Author (
+    AuthorID INT PRIMARY KEY,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Biography TEXT
+);
+
+-- Create Book table
+CREATE TABLE Book (
+    BookID INT PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Genre VARCHAR(100),
+    Price DECIMAL(10, 2),
+    PublishedDate DATE,
+    StockQuantity INT,
+    AuthorID INT,
+    FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID)
+);
+
+-- Create Customer table
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    PhoneNumber VARCHAR(15)
+);
+
+-- Create Purchase table
+CREATE TABLE Purchase (
+    PurchaseID INT PRIMARY KEY,
+    CustomerID INT,
+    PurchaseDate DATE NOT NULL,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+-- Create PurchaseBook table to represent the many-to-many relationship between Purchase and Book
+CREATE TABLE PurchaseBook (
+    PurchaseID INT,
+    BookID INT,
+    Quantity INT NOT NULL,
+    PRIMARY KEY (PurchaseID, BookID),
+    FOREIGN KEY (PurchaseID) REFERENCES Purchase(PurchaseID),
+    FOREIGN KEY (BookID) REFERENCES Book(BookID)
+);
+a. Display a list of 20 latest published in-stock book titles of the store.
+
+SELECT Title
+FROM Book
+WHERE StockQuantity > 0
+ORDER BY PublishedDate DESC
+LIMIT 20;
+
+
+b. Retrieve a list of all purchases since January 01, 2024.
+
+SELECT *
+FROM Purchase
+WHERE PurchaseDate >= '2024-01-01';
+
+
+c. List down all the authors in the database who have “Mohammad” or “MD” at the beginning of their name, sorted by the names (alphabetically).
+
+SELECT FirstName, LastName
+FROM Author
+WHERE FirstName LIKE 'Mohammad%' OR FirstName LIKE 'MD%'
+ORDER BY FirstName, LastName;
